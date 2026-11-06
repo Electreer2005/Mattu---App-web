@@ -72,3 +72,32 @@
     text-align: center;
     color: var(--text-muted);
 }
+.auth-success {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  text-align: center;
+  color: var(--text);
+}
+
+.auth-success svg {
+  color: var(--success, #4b8b65);
+}
+
+.form-container > p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 520px) {
+  .Auth-container {
+    min-height: 100dvh;
+    height: auto;
+    padding: 20px 14px;
+  }
+
+  .form-container {
+    width: min(100%, 400px);
+  }
+}
