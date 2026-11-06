@@ -4,6 +4,7 @@ import {
   Home,
   Sparkles,
   Gem,
+  ShoppingBag,
   User,
   ChevronRight,
 } from 'lucide-react';
@@ -90,6 +91,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <Link to="/productos" onClick={onClose}>
                   <Gem size={18} aria-hidden="true" />
                   <span>Productos</span>
+                </Link>
+              </li>
+                          <li>
+                <Link to="/mis-pedidos" onClick={onClose}>
+                  <ShoppingBag size={18} aria-hidden="true" />
+                  <span>Mis pedidos</span>
                 </Link>
               </li>
             </ul>
