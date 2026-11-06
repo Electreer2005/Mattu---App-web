@@ -82,6 +82,13 @@ export function AuthProvider({ children }) {
     })
   ), [run]);
 
+  const resendVerification = useCallback((email) => run(() =>
+    customerApi('auth/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    })
+  ), [run]);
+
   const verifyEmail = useCallback((token) => run(() =>
     customerApi('auth/verify', {
       method: 'POST',
@@ -147,6 +154,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     verifyEmail,
+    resendVerification,
     logout,
     forgotPassword,
     resetPassword,
@@ -160,6 +168,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     verifyEmail,
+    resendVerification,
     logout,
     forgotPassword,
     resetPassword,
