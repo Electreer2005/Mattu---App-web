@@ -4,11 +4,13 @@ import { ArrowLeft, ArrowRight, Check, Plus } from 'lucide-react';
 import { getServiceBySlug, SERVICES } from '../../data/services';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
 import { useToast } from '../../context/ToastContext';
+import { useCart } from '../../context/CartContext';
 
 const ServiceDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addItem } = useCart();
 
   const service = getServiceBySlug(slug);
 
@@ -50,13 +52,21 @@ const ServiceDetailPage = () => {
     }
 
     setIsSubmitting(true);
-
-    // TODO: conectar con CartContext para persistir la solicitud
-    setTimeout(() => {
-      toast('Servicio agregado a tu solicitud', { type: 'success' });
-      setIsSubmitting(false);
-      navigate('/'); // o a /cart
-    }, 400);
+    addItem({
+      id: `service-${service.slug}`,
+      serviceId: service.slug,
+      name: service.title,
+      category: service.category,
+      image: service.image,
+      alt: service.alt,
+      piece: form.piece,
+      material: form.material,
+      design: form.design,
+      price: 0,
+    }, Number(form.quantity));
+    toast('Servicio agregado a tu solicitud', { type: 'success' });
+    setIsSubmitting(false);
+    navigate('/carrito');
   };
 
   return (
