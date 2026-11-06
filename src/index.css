@@ -1,0 +1,211 @@
+:root {
+  /* ============================================================
+     MATU — DESIGN TOKENS
+     Paleta: negro · blanco · naranja · marrón
+     Estilo: artesanal, cálido, elegante
+  ============================================================ */
+
+  /* ---------- NARANJA (marca principal) ----------
+     Cobre / terracota → evoca metal grabado, fuego, calidez */
+  --orange-50:  #fdf3eb;
+  --orange-100: #fbe3d0;
+  --orange-200: #f5c4a0;
+  --orange-300: #eda072;
+  --orange-400: #e18550;
+  --orange-500: #d97234;   /* ← base */
+  --orange-600: #b85a1f;   /* ← hover / texto sobre cream (mejor contraste) */
+  --orange-700: #954617;
+  --orange-800: #733412;
+
+  /* ---------- MARRÓN (secundario cálido) ----------
+     Cuero / madera / bronce. Coincide con tu brand brown original */
+  --brown-50:  #f5ede2;
+  --brown-100: #e8dccd;
+  --brown-200: #d4bfa6;
+  --brown-300: #b89978;
+  --brown-400: #96704a;
+  --brown-500: #7a5636;
+  --brown-600: #61432f;    /* ← tu --brown original */
+  --brown-700: #493020;    /* ← tu --brown-dark original */
+  --brown-800: #2f1e14;
+  --brown-900: #1a110a;
+
+  /* ---------- NEGROS Y GRISES CÁLIDOS ----------
+     Grises con tinte marrón para no enfriar la paleta */
+  --black:      #14100d;
+  --gray-900:   #241a13;   /* ← tu --ink original, casi */
+  --gray-800:   #2d2520;
+  --gray-700:   #4a3f37;
+  --gray-600:   #5e534a;
+  --gray-500:   #7a6f65;   /* ← tu --muted original */
+  --gray-400:   #9d9084;
+  --gray-300:   #b8aba0;
+  --gray-200:   #ddd2c6;   /* ← tu --line original, casi */
+  --gray-100:   #ede4d8;
+  --cream:      #faf6f0;   /* ← tu --paper original, un toque más cálido */
+  --white:      #ffffff;
+
+  /* ============================================================
+     TOKENS SEMÁNTICOS — usá estos en el código, no los raw
+  ============================================================ */
+
+  /* Superficies */
+  --bg:            var(--cream);
+  --bg-subtle:     var(--brown-50);
+  --bg-inverse:    var(--black);
+  --surface:       var(--white);
+  --surface-muted: var(--gray-100);
+
+  /* Texto */
+  --text:          var(--gray-900);
+  --text-soft:     var(--gray-700);
+  --text-muted:    var(--gray-500);
+  --text-inverse:  var(--white);
+  --text-brand:    var(--orange-600);
+
+  /* Marca */
+  --brand:         var(--orange-500);
+  --brand-hover:   var(--orange-600);
+  --brand-soft:    var(--orange-100);
+  --brand-ink:     var(--brown-600);
+
+  /* Bordes */
+  --border:        var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-brand:  var(--orange-500);
+  --border-soft:   var(--brown-100);
+
+  /* Estados */
+  --success: #2f7a3d;
+  --warning: var(--orange-600);
+  --danger:  #b3261e;
+
+  /* ============================================================
+     TIPOGRAFÍA
+  ============================================================ */
+  --font-title: 'Playfair Display', Georgia, serif;
+  --font-body:  'DM Sans', Arial, sans-serif;
+
+  --fs-xs:   0.75rem;
+  --fs-sm:   0.875rem;
+  --fs-base: 1rem;
+  --fs-lg:   1.125rem;
+  --fs-xl:   1.25rem;
+  --fs-2xl:  1.5rem;
+  --fs-3xl:  2rem;
+  --fs-4xl:  2.5rem;
+  --fs-5xl:  3.25rem;
+
+  --lh-tight: 1.15;
+  --lh-snug:  1.35;
+  --lh-base:  1.6;
+
+  /* ============================================================
+     ESPACIADO (escala de 4px)
+  ============================================================ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* ============================================================
+     RADIOS
+  ============================================================ */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 999px;
+
+  /* ============================================================
+     SOMBRAS cálidas (nunca grises fríos)
+  ============================================================ */
+  --shadow-sm:    0 1px 2px rgba(36, 26, 19, 0.06);
+  --shadow-md:    0 4px 12px rgba(36, 26, 19, 0.08);
+  --shadow-lg:    0 12px 32px rgba(36, 26, 19, 0.12);
+  --shadow-warm:  0 8px 24px rgba(97, 67, 47, 0.15);
+  --shadow-brand: 0 8px 24px rgba(217, 114, 52, 0.25);
+
+  /* ============================================================
+     TRANSICIONES
+  ============================================================ */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+  --transition: all var(--dur-base) var(--ease-out);
+
+  /* ============================================================
+     ALIASES — compatibilidad con tu código actual
+     (podés borrar esto cuando termines la migración)
+  ============================================================ */
+  --ink:        var(--text);
+  --brown:      var(--brand-ink);
+  --brown-dark: var(--brown-700);
+  --paper:      var(--bg);
+  --sand:       var(--bg-subtle);
+  --muted:      var(--text-muted);
+  --line:       var(--border);
+  --title:      var(--font-title);
+  --body:       var(--font-body);
+}
+
+/* ============================================================
+   MATU — DARK MODE
+   Activación: <html data-theme="dark">
+   (o automático con el snippet de JS al final)
+============================================================= */
+[data-theme="dark"] {
+  color-scheme: dark;   /* form controls, scrollbars, etc. */
+
+  /* ---------- SUPERFICIES ----------
+     Cálidas, no negro puro. El marrón-base sigue presente. */
+  --bg:            #1a1310;   /* fondo principal, marrón-negro cálido */
+  --bg-subtle:     #241a13;   /* secciones alternas */
+  --bg-inverse:    var(--cream);  /* flip: el "inverso" ahora es claro */
+  --surface:       #241a13;   /* cards, modales */
+  --surface-muted: #2d2019;   /* inputs, hover de cards */
+
+  /* ---------- TEXTO ----------
+     Off-white cálido, no #fff puro. Mantiene la calidez artesanal. */
+  --text:          #f5ede2;
+  --text-soft:     #d4c4b3;
+  --text-muted:    #a89887;
+  --text-inverse:  #14100d;
+  --text-brand:    var(--orange-300);   /* naranja claro para énfasis */
+
+  /* ---------- MARCA ----------
+     Subimos un escalón (500 → 400) para que el naranja "brille"
+     igual que en light mode. Práctica estándar en Material / Radix. */
+  --brand:         var(--orange-400);   /* #e18550 */
+  --brand-hover:   var(--orange-300);   /* #eda072 — glow al hover */
+  --brand-soft:    rgba(225, 133, 80, 0.15);  /* tinte, no bloque */
+  --brand-ink:     var(--orange-200);   /* precios/títulos en naranja claro */
+
+  /* ---------- BORDES ---------- */
+  --border:        #3a2a1e;
+  --border-strong: #5a4030;
+  --border-brand:  var(--orange-400);
+  --border-soft:   #2e2118;
+
+  /* ---------- ESTADOS ----------
+     Los semáforos suben de luminosidad para no vibrar sobre negro. */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger:  #f87171;
+
+  /* ---------- SOMBRAS ----------
+     Mucho más opacas (el negro sobre negro necesita peso).
+     La de marca conserva el glow naranja. */
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg:    0 12px 32px rgba(0, 0, 0, 0.65);
+  --shadow-warm:  0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-brand: 0 8px 24px rgba(225, 133, 80, 0.35);
+}
