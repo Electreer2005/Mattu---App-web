@@ -1,0 +1,95 @@
+.service-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.service-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-warm);
+  transform: translateY(-2px);
+}
+
+/* ---------- Imagen ---------- */
+.service-card__image {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.service-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.service-card:hover .service-card__image img {
+  transform: scale(1.05);
+}
+
+/* Badge de categoría */
+.service-card__badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  padding: 4px 10px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--surface);
+  color: var(--text-brand);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Info ---------- */
+.service-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  flex: 1;
+}
+
+.service-card__title {
+  font-family: var(--font-title);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  color: var(--text);
+  margin: 0;
+}
+
+.service-card__description {
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+  line-height: var(--lh-base);
+  margin: 0;
+  flex: 1;
+}
+
+.service-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-brand);
+  transition: gap var(--dur-fast) var(--ease-out);
+}
+
+.service-card__cta:hover {
+  gap: var(--space-3);
+}
