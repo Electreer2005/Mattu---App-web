@@ -10,6 +10,29 @@ import { customerApi } from '../services/customerApi';
 
 const AuthContext = createContext(null);
 
+function resizeImage(file, maxSize = 256) {
+  return new Promise((resolve, reject) => {
+    if (!file?.type?.startsWith('image/')) return reject(new Error('El archivo debe ser una imagen.'));
+    if (file.size > 5 * 1024 * 1024) return reject(new Error('La imagen no puede superar 5 MB.'));
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error('La imagen no es válida.'));
+      image.onload = () => {
+        const ratio = Math.min(maxSize / image.width, maxSize / image.height, 1);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.width * ratio);
+        canvas.height = Math.round(image.height * ratio);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.78));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -97,13 +120,24 @@ export function AuthProvider({ children }) {
     return result.user;
   }), [run]);
 
-  const updateAvatar = useCallback(async () => {
-    throw new Error('La carga de fotos de perfil todavía no está conectada al almacenamiento seguro.');
-  }, []);
+  const updateAvatar = useCallback((file) => run(async () => {
+    const avatar = await resizeImage(file);
+    const result = await customerApi('profile/avatar', {
+      method: 'POST',
+      body: JSON.stringify({ avatar }),
+    });
+    setUser(result.user);
+    return result.user;
+  }), [run]);
 
-  const removeAvatar = useCallback(async () => {
-    throw new Error('La carga de fotos de perfil todavía no está conectada al almacenamiento seguro.');
-  }, []);
+  const removeAvatar = useCallback(() => run(async () => {
+    const result = await customerApi('profile/avatar/remove', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+    setUser(result.user);
+    return result.user;
+  }), [run]);
 
   const value = useMemo(() => ({
     user,
