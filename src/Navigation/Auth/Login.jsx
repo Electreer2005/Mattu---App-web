@@ -11,13 +11,22 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, isAuthenticated, user } = useAuth();
+  const { login, resendVerification, isLoading, isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const from = location.state?.from?.pathname || '/';
 
   useEffect(() => {
     if (isAuthenticated) navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });
   }, [isAuthenticated, user, navigate]);
+
+  const handleResendVerification = async () => {
+    try {
+      await resendVerification(email);
+      toast('Si la cuenta necesita verificación, te enviamos un nuevo enlace.', { type: 'success' });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,6 +46,11 @@ export default function Login() {
       <div className="form-container">
         <h2 className="form-title">Iniciar sesión</h2>
         {error && <div className="auth-error" role="alert">{error}</div>}
+        {error.toLowerCase().includes('verificá tu correo') && (
+          <button type="button" className="btn btn--secondary btn--block" onClick={handleResendVerification} disabled={isLoading || !email.trim()}>
+            Reenviar correo de verificación
+          </button>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email" className="form-label">Correo</label>
