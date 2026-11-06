@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/customer/:path*",
+      "destination": "https://mattu-clientes.solismauricioezequiel.workers.dev/api/customer/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
