@@ -153,7 +153,8 @@ const EditProfile = () => {
                 onChange={handleChange}
                 autoComplete="email"
               />
-              {errors.email && <span className="form-field__error">{errors.email}</span>}
+              <span id="email-immutable-note" className="form-field__hint">El correo de acceso no se modifica desde el perfil.</span>
+              {errors.email && <span className="form-field__error">{errors.email}</span>
             </div>
 
             <div className={`form-field ${errors.phone ? 'form-field--error' : ''}`}>
