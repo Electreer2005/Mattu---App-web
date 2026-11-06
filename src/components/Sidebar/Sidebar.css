@@ -1,0 +1,303 @@
+/* ============================================================
+   MATTU — SIDEBAR (drawer lateral)
+   Consume solo tokens de index.css.
+============================================================= */
+
+/* ---------- OVERLAY ---------- */
+.Sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 13, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+  z-index: 90;
+}
+
+.Sidebar-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- PANEL ---------- */
+.Sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(320px, 85vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    visibility 0s var(--dur-base);
+}
+
+.Sidebar.is-open {
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    visibility 0s 0s;
+}
+
+/* ---------- HEADER DEL SIDEBAR ---------- */
+.header-sidebar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: var(--space-4) 56px var(--space-4) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-sidebar .Logo-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+.header-sidebar .Logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.header-sidebar h1 {
+  font-family: var(--font-title);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Sidebar .Sidebar-close {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xl);
+  line-height: 1;
+  color: var(--text-soft);
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.Sidebar .Sidebar-close:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+/* ============================================================
+   NAVEGACIÓN
+============================================================= */
+.NavBar {
+  flex: 1;
+  padding: var(--space-3) var(--space-2);
+  overflow-y: auto;
+}
+
+.NavBar nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Link con icono + texto */
+.NavBar nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-soft);
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.NavBar nav a svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.NavBar nav a:hover {
+  background: var(--surface-muted);
+  color: var(--text-brand);
+}
+
+.NavBar nav a:hover svg {
+  color: var(--text-brand);
+}
+
+/* Link activo (si más adelante usás NavLink) */
+.NavBar nav a.active,
+.NavBar nav a[aria-current="page"] {
+  background: var(--brand-soft);
+  color: var(--text-brand);
+  font-weight: 600;
+}
+
+.NavBar nav a.active svg,
+.NavBar nav a[aria-current="page"] svg {
+  color: var(--text-brand);
+}
+
+/* ============================================================
+   PERFIL (ahora es un <Link>)
+============================================================= */
+.Profile-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.Profile-container:hover {
+  background: var(--surface-muted);
+}
+
+/* Contenedor del avatar en el sidebar */
+.profile-avatar {
+  position: relative;
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;                 /* ← recorta la imagen en círculo */
+  border-radius: var(--radius-full);
+
+  background: var(--brand-soft);
+  color: var(--text-brand);
+
+  /* Anillo interior color sidebar + aro de marca */
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 0 4px var(--brand-soft);
+}
+
+/* Foto del usuario */
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;                /* ← no deforma, recorta centrado */
+  display: block;
+}
+
+/* Iniciales cuando no hay foto */
+.profile-avatar__initials {
+  font-family: var(--font-title);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--text-brand);
+  user-select: none;
+}
+
+/* Ícono fallback (sin avatar y sin nombre) */
+.profile-avatar > svg {
+  color: var(--text-brand);
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-info h2 {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-info p {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  margin: var(--space-1) 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.Profile-container:hover .profile-chevron {
+  color: var(--text-brand);
+  transform: translateX(2px);
+}
+
+/* ---------- AJUSTES DESKTOP ---------- */
+@media (min-width: 768px) {
+  .Sidebar {
+    width: 340px;
+  }
+
+  .header-sidebar {
+    padding: var(--space-5) 64px var(--space-5) var(--space-5);
+  }
+
+  .header-sidebar h1 {
+    font-size: var(--fs-2xl);
+  }
+
+  .NavBar {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .NavBar nav a {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--fs-base);
+  }
+
+  .Profile-container {
+    padding: var(--space-4) var(--space-5);
+  }
+}
