@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Package, RefreshCw, Clock3 } from 'lucide-react';
 import { customerApi } from '../../services/customerApi';
 import { formatPrice } from '../../utils/format';
+import './MyOrders.css';
 
 const statusLabels = {
   Recibido: 'Recibido',
