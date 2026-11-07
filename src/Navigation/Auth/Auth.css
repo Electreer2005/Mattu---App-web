@@ -1,77 +1,412 @@
-.Auth-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+/* ============================================================
+   MATU — Pantallas de Auth (Login / Register / Forgot / Reset)
+   Depende de tokens de index.css. Dark mode incluido gratis.
+============================================================ */
+
+/* ---------- Contenedor general ---------- */
+.Auth-container {
+  min-height: 100dvh;                 /* fallback: 100vh abajo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(var(--space-4), 5vw, var(--space-7));
+
+  /* Fondo cálido con halo de marca arriba + textura sutil */
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      var(--brand-soft) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      var(--brown-50) 0%,
+      transparent 50%
+    ),
+    var(--bg);
+
+  font-family: var(--font-body);
+  color: var(--text);
 }
 
-.form-container{
-    width: 400px;
-    background-color: var(--white);
+@supports (min-height: 100dvh) {
+  .Auth-container { min-height: 100dvh; }
+}
+@supports not (min-height: 100dvh) {
+  .Auth-container { min-height: 100vh; }
+}
+
+/* ---------- Card ---------- */
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  padding: clamp(var(--space-5), 4vw, var(--space-7));
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-warm);
+
+  animation: auth-card-in var(--dur-slow) var(--ease-out) both;
+}
+
+/* ---------- Título ---------- */
+.form-title,
+.form-container h2 {
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-title);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--text);
+}
+
+/* ---------- Form layout ---------- */
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-label,
+.form-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+/* ---------- Campo con ícono ---------- */
+.input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.input-box:hover {
+  border-color: var(--border-strong);
+}
+
+/* Cuando cualquier hijo tiene foco, el campo entero "se enciende" */
+.input-box:focus-within {
+  border-color: var(--border-brand);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+/* Error opcional: agregá className="input-box is-invalid" desde el JSX */
+.input-box.is-invalid,
+.input-box[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+.input-box.is-invalid:focus-within,
+.input-box[aria-invalid='true']:focus-within {
+  box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+}
+
+/* Íconos Lucide: heredan tamaño por CSS */
+.input-box .icon,
+.input-box > svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.input-box:focus-within .icon,
+.input-box:focus-within > svg {
+  color: var(--brand);
+}
+
+/* ---------- Input nativo ---------- */
+.form-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: var(--space-3) 0;
+
+  font-family: inherit;
+  font-size: var(--fs-base);
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Autofill: mantener el color del tema */
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-muted) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ---------- Toggle de contraseña ---------- */
+.password-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-right: calc(var(--space-2) * -1);
+  padding: 0;
+
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.password-toggle:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ---------- Error del formulario ---------- */
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+
+  font-size: var(--fs-sm);
+  line-height: var(--lh-snug);
+  color: var(--danger);
+
+  background: rgba(179, 38, 30, 0.08);
+  border: 1px solid rgba(179, 38, 30, 0.2);
+  border-radius: var(--radius-md);
+
+  animation: auth-error-in var(--dur-base) var(--ease-out);
+}
+
+.auth-error::before {
+  content: "!";
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--danger);
+  border-radius: 50%;
+}
+
+/* ---------- Link "olvidé contraseña" ---------- */
+.forgot-password {
+  text-align: right;
+  margin-top: calc(var(--space-1) * -1);
+}
+
+.forgot-password a {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-brand);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.forgot-password a:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Link a register (footer del form) ---------- */
+.AuthPage {
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.AuthText {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.AuthText a {
+  font-weight: 600;
+  color: var(--text-brand);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.AuthText a:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Hint de credenciales demo ---------- */
+.auth-hint {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+
+  font-size: var(--fs-xs);
+  line-height: var(--lh-snug);
+  text-align: center;
+  color: var(--text-muted);
+
+  background: var(--bg-subtle);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+.auth-hint strong {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.95em;
+  color: var(--text);
+  background: var(--surface);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Botón block (si no lo tenés en tu base) ---------- */
+.form-container .btn--block {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+/* Spinner del botón (Loader2 de lucide) */
+.form-container .btn .spinner {
+  animation: auth-spin 0.9s linear infinite;
+}
+
+/* ============================================================
+   ANIMACIONES
+============================================================ */
+
+@keyframes auth-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes auth-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes auth-error-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 480px) {
+  .Auth-container {
+    padding: var(--space-4);
+    align-items: flex-start;         /* evita quedar tapado por teclado */
+    padding-top: max(var(--space-6), env(safe-area-inset-top, var(--space-6)));
+  }
+
+  .form-container {
+    padding: var(--space-5);
     border-radius: var(--radius-lg);
-    padding: 20px;
-    box-shadow: var(--shadow-warm);
+  }
+
+  .form-title,
+  .form-container h2 {
+    font-size: var(--fs-xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .input-box {
+    min-height: 44px;
+  }
 }
 
-.form-container h2{
-    text-align: center;
-    margin-bottom: 20px;
+/* ============================================================
+   ACCESIBILIDAD
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .form-container,
+  .auth-error {
+    animation: none;
+  }
+
+  .form-container .btn .spinner {
+    animation: none;
+  }
 }
 
-.form-group{
-    margin-bottom: 15px;
-}
 
-.form-group label{
-    display: block;
-    margin-bottom: 5px;
-}
-
-.input-box{
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--gray-300);
-    height: 50px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.form-input{
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    padding: 10px;
-}
-
-.icon{
-    font-size: 20px;
-    color: var(--text-muted);
-}
-
-.forgot-password{
-    text-align: right;
-    margin-top: 10px;
-}
-
-.form-container button{
-    margin: 0 auto;
-}
-
-.AuthPage{
-    margin-top: 10px;
-    text-align: center;
-    border-top: 1px solid var(--border);
-}
-
-.AuthText{
-    margin-top: 10px;
-    text-align: center;
-    color: var(--text-muted);
-}
+/* Estados de éxito utilizados por las pantallas de autenticación */
 .auth-success {
   display: grid;
   justify-items: center;
@@ -88,16 +423,4 @@
 .form-container > p {
   color: var(--text-muted);
   line-height: 1.6;
-}
-
-@media (max-width: 520px) {
-  .Auth-container {
-    min-height: 100dvh;
-    height: auto;
-    padding: 20px 14px;
-  }
-
-  .form-container {
-    width: min(100%, 400px);
-  }
 }
