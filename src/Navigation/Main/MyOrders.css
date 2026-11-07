@@ -1,0 +1,102 @@
+.my-orders-page {
+  display: grid;
+  gap: 22px;
+}
+
+.my-orders-page .admin-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.my-orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.my-orders-page .admin-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-warm);
+}
+
+.my-orders-page .admin-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.my-orders-page .admin-card__header p {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.my-orders-page .admin-card__body {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.my-orders-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+
+.my-orders-item span:last-child {
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.my-orders-page .admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-muted);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+}
+
+.my-orders-page .admin-badge--success {
+  background: color-mix(in srgb, #4b8b65 12%, var(--surface));
+  color: #39744f;
+}
+
+.my-orders-page .admin-badge--sale {
+  background: color-mix(in srgb, #b84c4c 12%, var(--surface));
+  color: #a43f3f;
+}
+
+.my-orders-page .admin-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+@media (max-width: 520px) {
+  .my-orders-page .admin-card__header,
+  .my-orders-item {
+    align-items: flex-start;
+  }
+
+  .my-orders-item {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

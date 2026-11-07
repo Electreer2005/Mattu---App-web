@@ -29,9 +29,6 @@ const EditProfile = () => {
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'El nombre es obligatorio';
-    if (!form.email.trim()) e.email = 'El email es obligatorio';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = 'Email inválido';
     if (form.phone && !/^[\d\s+()-]{6,}$/.test(form.phone))
       e.phone = 'Teléfono inválido';
     setErrors(e);
@@ -150,10 +147,11 @@ const EditProfile = () => {
                 name="email"
                 type="email"
                 value={form.email}
-                onChange={handleChange}
+                readOnly
+                aria-describedby="email-immutable-note"
                 autoComplete="email"
               />
-              {errors.email && <span className="form-field__error">{errors.email}</span>}
+              <span id="email-immutable-note" className="form-field__hint">El correo de acceso no se modifica desde el perfil.</span>
             </div>
 
             <div className={`form-field ${errors.phone ? 'form-field--error' : ''}`}>

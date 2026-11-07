@@ -19,6 +19,7 @@ import Profile from './Main/Profile';
 import EditProfile from './Main/EditProfile';
 import Settings from './Main/Settings';
 import Favorites from './Main/Favorites';
+import MyOrders from './Main/MyOrders';
 
 import './Main/Main.css';
 
@@ -60,6 +61,7 @@ const MainNavigator = () => {
               <Route path="/productos" element={<Products />} />
               <Route path="/productos/:id" element={<ProductDetail />} />
               <Route path="/carrito" element={<Cart />} />
+              <Route path="/mis-pedidos" element={<MyOrders />} />
               <Route path="/perfil" element={<Profile />} />
               <Route path="/editar-perfil" element={<EditProfile />} />
               <Route path="/configuracion" element={<Settings />} />

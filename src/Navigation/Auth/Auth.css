@@ -404,3 +404,23 @@
     animation: none;
   }
 }
+
+
+/* Estados de éxito utilizados por las pantallas de autenticación */
+.auth-success {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  text-align: center;
+  color: var(--text);
+}
+
+.auth-success svg {
+  color: var(--success, #4b8b65);
+}
+
+.form-container > p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}

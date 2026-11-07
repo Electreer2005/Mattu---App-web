@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: '/',         icon: Home,         label: 'Inicio',   end: true },
   { to: '/servicios', icon: Sparkles,     label: 'Servicios' },
   { to: '/productos', icon: Gem,     label: 'Productos' },
+  { to: '/mis-pedidos', icon: ShoppingBag, label: 'Pedidos' },
   { to: '/perfil',  icon: User,         label: 'Perfil' },
 ];
 

@@ -1,75 +1,55 @@
 import { useState } from 'react';
-import { Mail, Loader2, ArrowLeft } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
-
 
 export default function ForgotPassword() {
-    const [email, setEmail] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-    const { forgotPassword, isLoading } = useAuth();
-    const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [sent, setSent] = useState(false);
+  const { forgotPassword, isLoading } = useAuth();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    try {
+      await forgotPassword(email);
+      setSent(true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-        if (!email) {
-            setError('Por favor, completa todos los campos.');
-            return;
-        }
-
-        try {
-            await forgotPassword(email);
-            toast('Si el email existe, te enviamos las instrucciones.', { type: 'success' });
-            // En prod: no navegarías acá, el user clickea el link del mail.
-            // Para demo: pasamos el email al reset
-            navigate(`/reset-password?email=${encodeURIComponent(email)}`);
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
-    return (
-        <div className='Auth-container'>
-            <div className="form-container">
-                <h2 className="form-title">Recuperar contraseña</h2>
-                {error && <div className="auth-error">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email" className='form-label'>Correo</label>
-                        <div className="input-box">
-                            <Mail className="icon" />
-                            <input
-                                type="email"
-                                id="email"
-                                className='form-input'
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Ingrese tu correo"
-                                disabled={isLoading}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <button type="submit" className="btn btn--ghost btn--block" disabled={isLoading}>
-                        {isLoading ? (
-                            <><Loader2 className="spinner" size={20} /> Cargando...</>
-                        ) : (
-                            <>Enviar correo <Mail /></>
-                        )}
-                    </button>
-                    <div className="AuthPage">
-                        <Link to="/">
-                            <button type="button" className='btn btn-outline'>
-                                <ArrowLeft /> Volver
-                            </button>
-                        </Link>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    <div className="Auth-container">
+      <div className="form-container">
+        <h2 className="form-title">Recuperar contraseña</h2>
+        {sent ? (
+          <div className="auth-success">
+            <CheckCircle size={32} />
+            <p>Si existe una cuenta verificada con ese correo, te enviamos un enlace para crear una contraseña nueva. Revisá también spam.</p>
+          </div>
+        ) : (
+          <>
+            <p>Ingresá el correo de tu cuenta y te enviaremos un enlace seguro.</p>
+            {error && <div className="auth-error" role="alert">{error}</div>}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">Correo</label>
+                <div className="input-box"><Mail className="icon" />
+                  <input id="email" type="email" className="form-input" value={email}
+                    onChange={(event) => setEmail(event.target.value)} placeholder="Tu correo"
+                    autoComplete="email" disabled={isLoading} required />
+                </div>
+              </div>
+              <button type="submit" className="btn btn--ghost btn--block" disabled={isLoading}>
+                {isLoading ? <><Loader2 className="spinner" size={20} /> Enviando...</> : <>Enviar enlace <Mail /></>}
+              </button>
+            </form>
+          </>
+        )}
+        <div className="AuthPage"><Link to="/" className="btn btn-outline"><ArrowLeft /> Volver al inicio</Link></div>
+      </div>
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Camera, Trash2, User, Users, Heart, Settings, LogOut } from 'lucide-react';
+import { Camera, Trash2, User, Users, Heart, Settings, LogOut, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -125,6 +125,9 @@ const Profile = () => {
                 </button>
                 <button className="btn btn--primary" onClick={handleSettings}>
                     <Settings /> Configuracion
+                </button>
+                <button className="btn btn--primary" onClick={() => navigate("/mis-pedidos")}>
+                    <ShoppingBag /> Mis pedidos
                 </button>
                 <button className="btn btn--primary" onClick={handleFavorites}>
                     <Heart/> Favoritos

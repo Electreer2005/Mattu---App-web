@@ -1,124 +1,73 @@
 import { useState } from 'react';
-import { Lock, Eye, EyeOff, Loader2, LogIn, ArrowLeft } from 'lucide-react';
+import { Lock, Eye, EyeOff, Loader2, CheckCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useToast } from '../../context/ToastContext';
 
 export default function ResetPassword() {
-    const [searchParams] = useSearchParams();
-    const email = searchParams.get('email') || '';
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token') || '';
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [updated, setUpdated] = useState(false);
+  const navigate = useNavigate();
+  const { resetPassword, isLoading } = useAuth();
 
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    if (!token) return setError('El enlace no contiene un token válido. Solicitá otro correo.');
+    if (password.length < 10) return setError('La contraseña debe tener al menos 10 caracteres.');
+    if (password !== confirmPassword) return setError('Las contraseñas no coinciden.');
+    try {
+      await resetPassword({ token, password });
+      setUpdated(true);
+      setTimeout(() => navigate('/', { replace: true }), 1800);
+    } catch (err) {
+      setError(err.message);
+      setPassword('');
+      setConfirmPassword('');
+    }
+  };
 
-    const navigate = useNavigate();
-    const { resetPassword, isLoading } = useAuth();
-    const { toast } = useToast();
-
-    const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-
-        if (!password || !confirmPassword) {
-            setError('Por favor, completa todos los campos.');
-            return;
-        }
-        if (password.length < 6) {
-            setError('La contraseña debe tener al menos 6 caracteres.');
-            return;
-        }
-        if (password !== confirmPassword) {
-            setError('Las contraseñas no coinciden.');
-            return;
-        }
-        if (!email) {
-            setError('Falta el email. Volvé a solicitar el reset.');
-            return;
-        }
-
-        try {
-            await resetPassword({ email, password });
-            toast('¡Contraseña actualizada! Iniciá sesión.', { type: 'success' });
-            navigate('/login', { replace: true });
-        } catch (err) {
-            setError(err.message);
-            setPassword('');
-            setConfirmPassword('');
-        }
-    };
-
-    return (
-        <div className='Auth-container'>
-            <div className="form-container">
-                <h2 className="form-title">Resetear contraseña</h2>
-                {email && (
-                    <p className="auth-hint">
-                        Cuenta: <strong>{email}</strong>
-                    </p>
-                )}
-                {error && <div className="auth-error">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="password" className='form-label'>Nueva contraseña</label>
-                        <div className="input-box">
-                            <Lock className="icon" />
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                className='form-input'
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder='Mínimo 6 caracteres'
-                                disabled={isLoading}
-                                required
-                                minLength={6}
-                            />
-                            <button
-                                type='button'
-                                onClick={togglePasswordVisibility}
-                                className="password-toggle"
-                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                            >
-                                {showPassword ? <EyeOff /> : <Eye />}
-                            </button>
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword" className='form-label'>Confirmar contraseña</label>
-                        <div className="input-box">
-                            <Lock className="icon" />
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                id="confirmPassword"
-                                className='form-input'
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder='Repetí la contraseña'
-                                disabled={isLoading}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <button type="submit" className="btn btn--dark btn--block" disabled={isLoading}>
-                        {isLoading ? (
-                            <><Loader2 className="spinner" size={20} /> Cargando...</>
-                        ) : (
-                            <>Resetear contraseña <LogIn /></>
-                        )}
-                    </button>
-                    <div className="AuthPage">
-                        <Link to="/">
-                            <button type="button" className='btn btn-outline'>
-                                <ArrowLeft /> Volver al login
-                            </button>
-                        </Link>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    <div className="Auth-container">
+      <div className="form-container">
+        <h2 className="form-title">Crear nueva contraseña</h2>
+        {updated ? (
+          <div className="auth-success"><CheckCircle size={32} /><p>Tu contraseña fue actualizada. Ya podés iniciar sesión.</p><Link to="/">Ir a iniciar sesión</Link></div>
+        ) : (
+          <>
+            {error && <div className="auth-error" role="alert">{error}</div>}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">Nueva contraseña</label>
+                <div className="input-box"><Lock className="icon" />
+                  <input id="password" type={showPassword ? 'text' : 'password'} className="form-input"
+                    value={password} onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Mínimo 10 caracteres" autoComplete="new-password" minLength={10} required />
+                  <button type="button" onClick={() => setShowPassword((value) => !value)}
+                    className="password-toggle" aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </button>
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña</label>
+                <div className="input-box"><Lock className="icon" />
+                  <input id="confirmPassword" type={showPassword ? 'text' : 'password'} className="form-input"
+                    value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)}
+                    placeholder="Repetí la contraseña" autoComplete="new-password" required />
+                </div>
+              </div>
+              <button type="submit" className="btn btn--dark btn--block" disabled={isLoading}>
+                {isLoading ? <><Loader2 className="spinner" size={20} /> Guardando...</> : 'Actualizar contraseña'}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
