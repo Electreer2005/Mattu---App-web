@@ -66,6 +66,7 @@ export default function MyOrders() {
                 <div>
                   <strong>{order.number || order.id}</strong>
                   <p>{new Date(order.createdAt).toLocaleDateString('es-AR', { dateStyle: 'medium' })}</p>
+                  {order.webType && <small className="my-orders-type">{order.webType === 'product' ? 'Compra web' : order.webType === 'mixed' ? 'Compra mixta' : 'Solicitud web'}</small>}
                 </div>
                 <span className={`admin-badge admin-badge--${order.status === 'Entregado' ? 'success' : order.status === 'Cancelado' ? 'sale' : 'new'}`}>
                   {statusLabels[order.status] || order.status}
