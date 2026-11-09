@@ -9,7 +9,7 @@ import { useServices } from '../../context/ServicesContext';
 import './Header.css';
 
 const normalize = (value = '') =>
-  String(value).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
+  String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 const Header = ({ onMenuClick, isMenuOpen = false }) => {
   const { totalItems } = useCart();
