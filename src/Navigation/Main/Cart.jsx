@@ -32,6 +32,7 @@ const Cart = () => {
           notes,
           items: items.map((item) => ({
             serviceId: item.serviceId || undefined,
+            productId: item.serviceId ? undefined : item.id,
             productName: item.serviceId ? undefined : item.name,
             name: item.name,
             piece: item.piece || item.name,
