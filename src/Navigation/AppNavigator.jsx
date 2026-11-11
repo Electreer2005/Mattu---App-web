@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastProvider } from '../context/ToastContext';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { CartProvider } from '../context/CartContext';
@@ -11,28 +11,29 @@ import MainNavigator from './MainNavigator';
 import AdminNavigator from './AdminNavigator';
 
 function NavigatorSwitch() {
-  const { isAuthenticated, isBootstrapping, user } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
 
   if (isBootstrapping) {
-    return (
-      <div className="auth-loading-screen">
-        <div className="spinner-large" />
-        <p>Cargando sesión…</p>
-      </div>
-    );
+    return <div className="auth-loading-screen"><div className="spinner-large" /><p>Cargando sesión…</p></div>;
   }
 
   if (!isAuthenticated) return <AuthNavigator />;
-  if (user?.role === 'admin') return <AdminNavigator />;
-  return <MainNavigator />;
+
+  // Una sola sesión: la tienda es la navegación principal y /admin es una sección protegida.
+  return (
+    <Routes>
+      <Route path="/admin/*" element={<AdminNavigator />} />
+      <Route path="/*" element={<MainNavigator />} />
+    </Routes>
+  );
 }
 
 export default function AppNavigator() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1500); // 7s era demasiado
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) return <Loader message="Cargando Mattu..." />;
@@ -43,9 +44,7 @@ export default function AppNavigator() {
         <AuthProvider>
           <CartProvider>
             <ProductsProvider>
-              <ServicesProvider>
-                <NavigatorSwitch />
-              </ServicesProvider>
+              <ServicesProvider><NavigatorSwitch /></ServicesProvider>
             </ProductsProvider>
           </CartProvider>
         </AuthProvider>
