@@ -44,7 +44,7 @@ const ProductForm = () => {
     setForm((f) => ({ ...f, [k]: v }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -73,10 +73,10 @@ const ProductForm = () => {
 
     try {
       if (isEdit) {
-        updateProduct(id, payload);
+        await updateProduct(id, payload);
         toast('Producto actualizado', { type: 'success' });
       } else {
-        createProduct(payload);
+        await createProduct(payload);
         toast('Producto creado', { type: 'success' });
       }
       navigate('/admin/productos');
