@@ -34,7 +34,7 @@ const ServiceForm = () => {
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -54,10 +54,10 @@ const ServiceForm = () => {
 
     try {
       if (isEdit) {
-        updateService(slug, payload);
+        await updateService(slug, payload);
         toast('Servicio actualizado', { type: 'success' });
       } else {
-        createService(payload);
+        await createService(payload);
         toast('Servicio creado', { type: 'success' });
       }
       navigate('/admin/servicios');
