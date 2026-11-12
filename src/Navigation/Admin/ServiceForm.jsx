@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useServices } from '../../context/ServicesContext';
 import { useToast } from '../../context/ToastContext';
+import ImageUploadField from '../../components/Admin/ImageUploadField';
 
 const EMPTY = {
   slug: '', category: '', title: '', description: '', detail: '',
@@ -19,6 +20,7 @@ const ServiceForm = () => {
   const isEdit = Boolean(editing);
 
   const [form, setForm] = useState(EMPTY);
+  const [images, setImages] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const ServiceForm = () => {
       title: form.title.trim(),
       description: form.description.trim(),
       detail: form.detail.trim(),
-      image: form.image.trim(),
+      image: images[0] || form.image.trim(),
       alt: form.alt.trim() || form.title.trim(),
       pieces: form.pieces.split('\n').map((p) => p.trim()).filter(Boolean),
     };

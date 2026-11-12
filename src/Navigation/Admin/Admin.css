@@ -540,3 +540,19 @@
   .admin-page-header { flex-direction: column; align-items: stretch; }
   .admin-page-header__actions > * { flex: 1; }
 }
+/* Carga de imágenes R2 */
+.image-upload-field { display: grid; gap: 12px; }
+.image-upload-field__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.image-upload-field__toolbar > div { display: grid; gap: 4px; }
+.image-upload-field__toolbar strong { color: var(--text); font-size: var(--fs-sm); }
+.image-upload-field__toolbar span, .image-upload-field__empty span { color: var(--text-muted); font-size: var(--fs-xs); }
+.image-upload-field__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 12px; }
+.image-upload-field__item { position: relative; aspect-ratio: 1; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-muted); }
+.image-upload-field__item img { width: 100%; height: 100%; object-fit: cover; }
+.image-upload-field__item > button { position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(20,16,13,.78); color: white; cursor: pointer; }
+.image-upload-field__cover { position: absolute; bottom: 7px; left: 7px; padding: 4px 7px; border-radius: 20px; background: var(--brand); color: white; font-size: 10px; font-weight: 700; }
+.image-upload-field__empty { display: grid; justify-items: center; gap: 8px; padding: 28px 16px; border: 1px dashed var(--border-strong); border-radius: var(--radius-lg); background: var(--bg-subtle); color: var(--brand); cursor: pointer; text-align: center; }
+.image-upload-field__empty strong { color: var(--text); font-size: var(--fs-sm); }
+.image-upload-field__empty:disabled { opacity: .6; cursor: wait; }
+.image-upload-spin { animation: image-upload-rotate 1s linear infinite; }
+@keyframes image-upload-rotate { to { transform: rotate(360deg); } }
