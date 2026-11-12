@@ -7,6 +7,7 @@ import {
   ShoppingBag,
   User,
   ChevronRight,
+  LayoutDashboard,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Logo from '../../assets/Logo.png';
