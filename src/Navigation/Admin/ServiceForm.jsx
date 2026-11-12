@@ -25,6 +25,7 @@ const ServiceForm = () => {
 
   useEffect(() => {
     if (!editing) return;
+    setImages(editing.image ? [editing.image] : []);
     setForm({
       ...EMPTY,
       ...editing,
@@ -106,9 +107,9 @@ const ServiceForm = () => {
                 <label htmlFor="detail">Detalle</label>
                 <textarea id="detail" rows={3} value={form.detail} onChange={set('detail')} />
               </div>
-              <div className="admin-field">
-                <label htmlFor="image">URL de imagen</label>
-                <input id="image" value={form.image} onChange={set('image')} />
+              <div className="admin-field admin-form__grid--full">
+                <label>Imagen del servicio</label>
+                <ImageUploadField images={images} onChange={setImages} multiple={false} maxFiles={1} />
               </div>
               <div className="admin-field">
                 <label htmlFor="alt">Texto alternativo</label>
