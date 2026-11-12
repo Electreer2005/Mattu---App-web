@@ -93,7 +93,15 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <span>Productos</span>
                 </Link>
               </li>
-                          <li>
+                          {user?.role === 'admin' && (
+                <li>
+                  <Link to="/admin" onClick={onClose}>
+                    <LayoutDashboard size={18} aria-hidden="true" />
+                    <span>Panel de administración</span>
+                  </Link>
+                </li>
+              )}
+              <li>
                 <Link to="/mis-pedidos" onClick={onClose}>
                   <ShoppingBag size={18} aria-hidden="true" />
                   <span>Mis pedidos</span>
