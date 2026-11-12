@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
-import { SERVICES, CATEGORIES } from '../../data/services';
+import { CATEGORIES } from '../../data/services';
+import { useServices } from '../../context/ServicesContext';
 
 const Services = () => {
   const [activeCategory, setActiveCategory] = useState('Todos');
+  const { services } = useServices();
+  const categories = ['Todos', ...new Set([...CATEGORIES.filter((c) => c !== 'Todos'), ...services.map((s) => s.category).filter(Boolean)])];
 
   const filtered =
     activeCategory === 'Todos'
@@ -29,7 +32,7 @@ const Services = () => {
         role="tablist"
         aria-label="Filtrar por categoría"
       >
-        {CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
             type="button"
