@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Sparkles } from 'lucide-react';
 import { useProducts } from '../../context/ProductsContext';
 import { useToast } from '../../context/ToastContext';
+import ImageUploadField from '../../components/Admin/ImageUploadField';
 
 const EMPTY = {
   name: '', description: '', category: '', price: '', oldPrice: '',
@@ -21,6 +22,7 @@ const ProductForm = () => {
   const isEdit = Boolean(editing);
 
   const [form, setForm] = useState(EMPTY);
+  const [images, setImages] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -55,7 +57,8 @@ const ProductForm = () => {
       category: form.category.trim(),
       price: Number(form.price),
       oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
-      image: form.image.trim(),
+      image: images[0] || form.image.trim(),
+      images: images.map((src) => ({ src, alt: form.alt.trim() || form.name.trim() })),
       alt: form.alt.trim() || form.name.trim(),
       badge: form.badge || undefined,
       stock: form.stock ? Number(form.stock) : undefined,
