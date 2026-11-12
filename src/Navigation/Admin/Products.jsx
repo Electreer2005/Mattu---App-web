@@ -28,7 +28,7 @@ const Products = () => {
     });
   }, [products, query, category, badge]);
 
-  const handleDelete = (p) => {
+  const handleDelete = async (p) => {
     if (!window.confirm(`¿Eliminar "${p.name}"?`)) return;
     deleteProduct(p.id);
     toast('Producto eliminado', { type: 'info' });

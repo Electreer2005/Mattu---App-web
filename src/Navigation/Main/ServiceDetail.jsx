@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, Plus } from 'lucide-react';
-import { getServiceBySlug, SERVICES } from '../../data/services';
+import { useServices } from '../../context/ServicesContext';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
 import { useToast } from '../../context/ToastContext';
 import { useCart } from '../../context/CartContext';
@@ -34,7 +34,7 @@ const ServiceDetailPage = () => {
     );
   }
 
-  const related = SERVICES.filter(
+  const related = services.filter(
     (s) => s.category === service.category && s.slug !== service.slug
   ).slice(0, 3);
 

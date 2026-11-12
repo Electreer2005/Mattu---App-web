@@ -13,7 +13,7 @@ const Services = () => {
     s.title.toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleDelete = (s) => {
+  const handleDelete = async (s) => {
     if (!window.confirm(`¿Eliminar "${s.title}"?`)) return;
     deleteService(s.slug);
     toast('Servicio eliminado', { type: 'info' });
