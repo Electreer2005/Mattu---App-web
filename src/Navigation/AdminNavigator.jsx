@@ -15,19 +15,20 @@ const AdminNavigator = () => {
   const { user } = useAuth();
   if (user?.role !== 'admin') return <Navigate to="/" replace />;
 
+  // AppNavigator mounts this component at /admin/*, so child paths are relative.
   return (
     <AdminLayout>
       <Routes>
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/productos" element={<AdminProducts />} />
-        <Route path="/admin/productos/nuevo" element={<AdminProductForm />} />
-        <Route path="/admin/productos/:id" element={<AdminProductForm />} />
-        <Route path="/admin/servicios" element={<AdminServices />} />
-        <Route path="/admin/servicios/nuevo" element={<AdminServiceForm />} />
-        <Route path="/admin/servicios/:slug" element={<AdminServiceForm />} />
-        <Route path="/admin/pedidos" element={<AdminOrders />} />
-        <Route path="/admin/usuarios" element={<AdminUsers />} />
-        <Route path="/admin/configuracion" element={<AdminSettings />} />
+        <Route index element={<AdminDashboard />} />
+        <Route path="productos" element={<AdminProducts />} />
+        <Route path="productos/nuevo" element={<AdminProductForm />} />
+        <Route path="productos/:id" element={<AdminProductForm />} />
+        <Route path="servicios" element={<AdminServices />} />
+        <Route path="servicios/nuevo" element={<AdminServiceForm />} />
+        <Route path="servicios/:slug" element={<AdminServiceForm />} />
+        <Route path="pedidos" element={<AdminOrders />} />
+        <Route path="usuarios" element={<AdminUsers />} />
+        <Route path="configuracion" element={<AdminSettings />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
