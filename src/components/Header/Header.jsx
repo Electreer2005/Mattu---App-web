@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Search, Menu, ArrowUpRight, X } from 'lucide-react';
+import { Search, Menu, ArrowUpRight, X, LayoutDashboard } from 'lucide-react';
 import { FaShoppingCart } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/Logo.png';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { useProducts } from '../../context/ProductsContext';
 import { useServices } from '../../context/ServicesContext';
 import './Header.css';
@@ -13,6 +14,7 @@ const normalize = (value = '') =>
 
 const Header = ({ onMenuClick, isMenuOpen = false }) => {
   const { totalItems } = useCart();
+  const { user } = useAuth();
   const { products } = useProducts();
   const { services } = useServices();
   const navigate = useNavigate();
@@ -162,6 +164,13 @@ const Header = ({ onMenuClick, isMenuOpen = false }) => {
             </div>
           )}
         </div>
+
+        {user?.role === 'admin' && (
+          <Link to="/admin" className="Header__admin-link" aria-label="Ir al panel de administración" title="Panel de administración" onClick={closeSearch}>
+            <LayoutDashboard size={17} aria-hidden="true" />
+            <span>Admin</span>
+          </Link>
+        )}
 
         <div className="Cart-container">
           <Link
