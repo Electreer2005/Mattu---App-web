@@ -27,6 +27,10 @@ const ProductForm = () => {
 
   useEffect(() => {
     if (!editing) return;
+    const existingImages = Array.isArray(editing.images)
+      ? editing.images.map((item) => typeof item === 'string' ? item : item?.src).filter(Boolean)
+      : [];
+    setImages(existingImages.length ? existingImages : (editing.image ? [editing.image] : []));
     setForm({
       ...EMPTY,
       ...editing,
@@ -116,9 +120,9 @@ const ProductForm = () => {
                 <label htmlFor="description">Descripción</label>
                 <textarea id="description" rows={3} value={form.description} onChange={set('description')} />
               </div>
-              <div className="admin-field">
-                <label htmlFor="image">URL de imagen</label>
-                <input id="image" value={form.image} onChange={set('image')} placeholder="/Img/producto.jpg" />
+              <div className="admin-field admin-form__grid--full">
+                <label>Imágenes del producto</label>
+                <ImageUploadField images={images} onChange={setImages} multiple maxFiles={6} />
               </div>
               <div className="admin-field">
                 <label htmlFor="alt">Texto alternativo</label>
