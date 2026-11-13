@@ -12,7 +12,11 @@ const ServiceDetailPage = () => {
   const { toast } = useToast();
   const { addItem } = useCart();
 
-  const service = getServiceBySlug(slug);
+  // 1. Traemos los servicios y el estado de carga desde el contexto
+  const { services, catalogLoading } = useServices();
+
+  // 2. Buscamos el servicio en el array usando el slug
+  const service = services.find((s) => s.slug === slug);
 
   const [form, setForm] = useState({
     piece: '',
@@ -22,6 +26,16 @@ const ServiceDetailPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // 3. Si está cargando, mostramos un mensaje (o un spinner)
+  if (catalogLoading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '3rem' }}>
+        <p className="muted">Cargando servicio...</p>
+      </div>
+    );
+  }
+
+  // 4. Si terminó de cargar y no lo encontró, mostramos el error
   if (!service) {
     return (
       <div className="service-detail__not-found">
@@ -34,6 +48,7 @@ const ServiceDetailPage = () => {
     );
   }
 
+  // Relacionados: usamos 'services' del contexto
   const related = services.filter(
     (s) => s.category === service.category && s.slug !== service.slug
   ).slice(0, 3);
@@ -95,7 +110,7 @@ const ServiceDetailPage = () => {
           <p className="service-detail__description">{service.detail}</p>
 
           <ul className="service-detail__pieces">
-            {service.pieces.map((p) => (
+            {service.pieces?.map((p) => (
               <li key={p}>
                 <Check size={14} aria-hidden="true" /> {p}
               </li>
@@ -122,7 +137,7 @@ const ServiceDetailPage = () => {
             className='Input'
           >
             <option value="">Elegí una opción</option>
-            {service.pieces.map((p) => (
+            {service.pieces?.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
@@ -203,7 +218,7 @@ const ServiceDetailPage = () => {
           <div className="service-detail__related-heading">
             <div>
               <p className="eyebrow">También te puede interesar</p>
-              <h2>Otros grabados {service.category.toLowerCase()}s</h2>
+              <h2>Otros grabados {service.category?.toLowerCase()}s</h2>
             </div>
             <Link to="/servicios" className="quiet-link">
               Ver todos <ArrowRight size={16} aria-hidden="true" />
