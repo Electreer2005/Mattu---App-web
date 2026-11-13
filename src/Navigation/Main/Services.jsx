@@ -1,18 +1,22 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
-import { CATEGORIES, SERVICES } from '../../data/services';
+import { CATEGORIES } from '../../data/services'; // Ya no importamos SERVICES
 import { useServices } from '../../context/ServicesContext';
 
 const Services = () => {
   const [activeCategory, setActiveCategory] = useState('Todos');
+  
+  // Obtenemos los servicios reales del contexto (incluye los que creás en el admin)
   const { services } = useServices();
+  
+  // Generamos las categorías mezclando las estáticas con las nuevas que agregues
   const categories = ['Todos', ...new Set([...CATEGORIES.filter((c) => c !== 'Todos'), ...services.map((s) => s.category).filter(Boolean)])];
 
+  // ACÁ ESTÁ LA CORRECCIÓN: Usamos 'services' en vez de 'SERVICES'
   const filtered =
     activeCategory === 'Todos'
-      ? SERVICES
-      : SERVICES.filter((s) => s.category === activeCategory);
+      ? services
+      : services.filter((s) => s.category === activeCategory);
 
   return (
     <div className="services-page">
