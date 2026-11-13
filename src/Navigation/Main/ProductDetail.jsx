@@ -14,11 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import {
-  getProductById,
-  getRelatedProducts,
-} from '../../data/products';
 import ProductCard from '../../components/ProductCard/ProductCard';
+import Loader from '../../components/Loader/Loader';
+import { useProducts } from '../../context/ProductsContext';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useToast } from '../../context/ToastContext';
@@ -29,8 +27,12 @@ const ProductDetail = () => {
   const { addItem } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { toast } = useToast();
+  const { products, catalogLoading } = useProducts();
 
-  const product = getProductById(id);
+  const product = useMemo(
+    () => products.find((p) => p.id === id),
+    [products, id]
+  );
 
   const [activeImage, setActiveImage] = useState(0);
   const [qty, setQty] = useState(1);
@@ -40,9 +42,18 @@ const ProductDetail = () => {
   const wishlisted = product ? isFavorite(product.id) : false;
 
   const related = useMemo(
-    () => (product ? getRelatedProducts(product, 4) : []),
-    [product]
+    () =>
+      product
+        ? products
+            .filter((p) => p.category === product.category && p.id !== product.id)
+            .slice(0, 4)
+        : [],
+    [products, product]
   );
+
+  if (!product && catalogLoading) {
+    return <Loader message="Cargando producto" />;
+  }
 
   if (!product) {
     return (
