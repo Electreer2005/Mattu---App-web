@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
-import { CATEGORIES } from '../../data/services';
+import { CATEGORIES, SEERVICES } from '../../data/services';
 import { useServices } from '../../context/ServicesContext';
 
 const Services = () => {
