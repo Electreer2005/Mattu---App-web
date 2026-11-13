@@ -60,20 +60,6 @@ const Services = () => {
           No hay servicios en esta categoría todavía.
         </p>
       )}
-
-      {/* CTA final */}
-      <div className="services-page__cta">
-        <div>
-          <p className="eyebrow">¿No encontrás lo que buscás?</p>
-          <h2>Contanos tu idea.</h2>
-          <p className="muted">
-            Si tenés un proyecto especial, escribinos y vemos cómo hacerlo.
-          </p>
-        </div>
-        <a className="btn btn--primary btn--lg" href="#contacto">
-          Contactanos <ArrowRight size={18} aria-hidden="true" />
-        </a>
-      </div>
     </div>
   );
 };
