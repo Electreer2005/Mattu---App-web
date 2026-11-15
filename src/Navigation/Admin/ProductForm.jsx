@@ -15,11 +15,11 @@ const EMPTY = {
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, createProduct, updateProduct } = useProducts();
+  const { products, createProduct, updateProduct, catalogLoading, catalogError } = useProducts();
   const { toast } = useToast();
 
   const editing = useMemo(() => products.find((p) => p.id === id), [products, id]);
-  const isEdit = Boolean(editing);
+  const isEdit = Boolean(id);
 
   const [form, setForm] = useState(EMPTY);
   const [images, setImages] = useState([]);
@@ -36,7 +36,7 @@ const ProductForm = () => {
       ...editing,
       price: String(editing.price ?? ''),
       oldPrice: editing.oldPrice ? String(editing.oldPrice) : '',
-      stock: editing.stock ? String(editing.stock) : '',
+      stock: editing.stock !== undefined && editing.stock !== null ? String(editing.stock) : '',
       rating: editing.rating ? String(editing.rating) : '',
       reviews: editing.reviews ? String(editing.reviews) : '',
       features: (editing.features || []).join('\n'),
@@ -52,6 +52,9 @@ const ProductForm = () => {
     e.preventDefault();
     setError('');
 
+    if (isEdit && !editing) {
+      return setError('No se encontró el producto que querés editar. Volvé al catálogo y actualizá la lista.');
+    }
     if (!form.name.trim()) return setError('El nombre es obligatorio.');
     if (!form.price || Number(form.price) <= 0) return setError('El precio debe ser mayor a 0.');
 
@@ -65,7 +68,7 @@ const ProductForm = () => {
       images: images.map((src) => ({ src, alt: form.alt.trim() || form.name.trim() })),
       alt: form.alt.trim() || form.name.trim(),
       badge: form.badge || undefined,
-      stock: form.stock ? Number(form.stock) : undefined,
+      stock: form.stock !== '' ? Number(form.stock) : undefined,
       rating: form.rating ? Number(form.rating) : undefined,
       reviews: form.reviews ? Number(form.reviews) : undefined,
       features: form.features.split('\n').map((f) => f.trim()).filter(Boolean),
@@ -88,6 +91,30 @@ const ProductForm = () => {
       setError(err.message || 'Error guardando');
     }
   };
+
+  if (isEdit && catalogLoading) {
+    return (
+      <div className="admin-empty" role="status">
+        <p>Cargando los datos del producto…</p>
+      </div>
+    );
+  }
+
+  if (isEdit && !editing) {
+    return (
+      <>
+        <header className="admin-page-header">
+          <div>
+            <h1>Producto no disponible</h1>
+            <p>{catalogError || 'No encontramos el producto solicitado en el catálogo.'}</p>
+          </div>
+          <Link to="/admin/productos" className="btn btn--secondary">
+            <ArrowLeft size={16} /> Volver a productos
+          </Link>
+        </header>
+      </>
+    );
+  }
 
   return (
     <>
@@ -178,14 +205,12 @@ const ProductForm = () => {
                 <label htmlFor="features">Características (una por línea)</label>
                 <textarea id="features" rows={4} value={form.features} onChange={set('features')} placeholder="Hecho a mano&#10;Envío a todo el país" />
               </div>
-
               <div className="admin-field admin-form__grid--full">
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <input type="checkbox" checked={form.customizable} onChange={set('customizable')} />
                   <Sparkles size={14} /> Permitir personalización
                 </label>
               </div>
-
               {form.customizable && (
                 <>
                   <div className="admin-field">
