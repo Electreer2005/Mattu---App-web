@@ -1,5 +1,6 @@
-// El catálogo comienza vacío. Los productos se cargan desde el panel de administración
-// y se guardan en el backend compartido de Mattu.
+// Catálogo vacío por defecto: los productos reales se cargan desde el backend.
+export const PRODUCTS = [];
+
 export const PRODUCT_CATEGORIES = [
   'Todos',
   'Anillos',
@@ -10,10 +11,10 @@ export const PRODUCT_CATEGORIES = [
   'Accesorios',
 ];
 
-export const getProductById = (id, products = []) =>
+export const getProductById = (id, products = PRODUCTS) =>
   products.find((product) => product.id === id);
 
-export const getRelatedProducts = (product, products = [], limit = 4) =>
+export const getRelatedProducts = (product, limit = 4, products = PRODUCTS) =>
   products
     .filter((item) => item.category === product.category && item.id !== product.id)
     .slice(0, limit);
