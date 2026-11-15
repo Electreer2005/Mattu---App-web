@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import {FaInstagram} from 'react-icons/fa';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
+import { useServices } from '../../context/ServicesContext';
 
 /* ---------- Datos ---------- */
 const SLIDES = [
@@ -27,65 +28,6 @@ const SLIDES = [
     image: '/Img/Banner-3.jpeg',
     alt: 'Dije con fotografía grabada',
     caption: 'Un instante, siempre cerca.',
-  },
-];
-
-const SERVICES = [
-  {
-    slug: 'nombres',
-    category: 'Texto',
-    title: 'Nombres y fechas',
-    description: 'Un nombre, una fecha o unas palabras que quieras llevar cerca.',
-    image: '/Img/Banner-1.jpeg',
-    alt: 'Pulsera con el nombre Aranzazu grabado',
-  },
-  {
-    slug: 'miradas',
-    category: 'Imagen',
-    title: 'Miradas y detalles',
-    description: 'Esa mirada que reconocés entre todas, grabada en una pieza.',
-    image: '/Img/Banner-2.jpeg',
-    alt: 'Pulsera con una mirada grabada',
-  },
-  {
-    slug: 'retratos',
-    category: 'Imagen',
-    title: 'Retratos en metal',
-    description: 'Transformá una fotografía en un recuerdo que puedas llevar con vos.',
-    image: '/Img/Banner-3.jpeg',
-    alt: 'Dije circular con un retrato grabado',
-  },
-  {
-    slug: 'simbolos',
-    category: 'Diseño',
-    title: 'Símbolos y diseños',
-    description: 'Iniciales, símbolos y diseños pensados para una pieza especial.',
-    image: '/Img/Banner-4.jpeg',
-    alt: 'Dos dijes con iniciales y un corazón',
-  },
-  {
-    slug: 'madera',
-    category: 'Madera',
-    title: 'Grabado en madera',
-    description: 'Nombres, logos y diseños sobre piezas de madera.',
-    image: '/Img/tabla-madera.svg',
-    alt: 'Tabla de madera grabada',
-  },
-  {
-    slug: 'cuero',
-    category: 'Cuero',
-    title: 'Grabado en cuero',
-    description: 'Personalizá artículos de cuero con textos, iniciales o diseños.',
-    image: '/Img/cuchillo-cuero.svg',
-    alt: 'Cuchillo y funda de cuero',
-  },
-  {
-    slug: 'virola',
-    category: 'Virola',
-    title: 'Grabado en virola',
-    description: 'Textos, iniciales y diseños personalizados en virolas de mates.',
-    image: '/Img/virola-nacho.svg',
-    alt: 'Virola de mate grabada',
   },
 ];
 
@@ -119,6 +61,7 @@ const GALLERY = [
 ];
 
 const Home = () => {
+  const { services, catalogLoading } = useServices();
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -238,9 +181,12 @@ const Home = () => {
         </div>
 
         <div className="home-service-grid">
-          {SERVICES.map((service) => (
+          {services.slice(0, 4).map((service) => (
             <ServiceCard key={service.slug} {...service} />
           ))}
+          {!catalogLoading && services.length === 0 && (
+            <p className="muted">Estamos preparando nuestro catálogo de servicios. Muy pronto vas a encontrar las opciones disponibles.</p>
+          )}
         </div>
       </section>
 
