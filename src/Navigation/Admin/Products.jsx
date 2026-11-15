@@ -13,6 +13,7 @@ const Products = () => {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('todas');
   const [badge, setBadge] = useState('todos');
+  const [deletingId, setDeletingId] = useState(null);
 
   const categories = useMemo(
     () => Array.from(new Set(products.map((p) => p.category))).sort(),
@@ -28,10 +29,18 @@ const Products = () => {
     });
   }, [products, query, category, badge]);
 
-  const handleDelete = async (p) => {
-    if (!window.confirm(`¿Eliminar "${p.name}"?`)) return;
-    deleteProduct(p.id);
-    toast('Producto eliminado', { type: 'info' });
+  const handleDelete = async (product) => {
+    if (deletingId || !window.confirm(`¿Eliminar "${product.name}"?`)) return;
+
+    setDeletingId(product.id);
+    try {
+      await deleteProduct(product.id);
+      toast('Producto eliminado', { type: 'success' });
+    } catch (error) {
+      toast(error.message || 'No se pudo eliminar el producto.', { type: 'error' });
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -135,6 +144,7 @@ const Products = () => {
                         className="admin-icon-btn admin-icon-btn--danger"
                         aria-label={`Eliminar ${p.name}`}
                         onClick={() => handleDelete(p)}
+                        disabled={Boolean(deletingId)}
                       >
                         <Trash2 size={14} />
                       </button>
