@@ -11,6 +11,7 @@ import {
 import {FaInstagram} from 'react-icons/fa';
 import ServiceCard from '../../components/ServiceCard/ServiceCard';
 import { useServices } from '../../context/ServicesContext';
+import { customerApi } from '../../services/customerApi';
 
 /* ---------- Datos ---------- */
 const SLIDES = [
@@ -64,6 +65,8 @@ const Home = () => {
   const { services, catalogLoading } = useServices();
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactFeedback, setContactFeedback] = useState({ type: '', text: '' });
 
   // Auto-play del hero (pausa si el usuario toca el botón)
   useEffect(() => {
@@ -74,10 +77,30 @@ const Home = () => {
     return () => clearInterval(id);
   }, [isPaused]);
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    // TODO: integrar con backend / WhatsApp
-    console.log('Contact form listo para enviar');
+    if (contactLoading) return;
+    const form = e.currentTarget;
+    const values = Object.fromEntries(new FormData(form).entries());
+    setContactLoading(true);
+    setContactFeedback({ type: '', text: '' });
+    try {
+      const result = await customerApi('contact', {
+        method: 'POST',
+        body: JSON.stringify(values),
+      });
+      setContactFeedback({
+        type: 'success',
+        text: result.notificationSent
+          ? '¡Gracias! Tu consulta fue recibida. El equipo de Mattu se pondrá en contacto.'
+          : 'Tu consulta quedó guardada correctamente. El equipo podrá verla desde el panel de administración.',
+      });
+      form.reset();
+    } catch (error) {
+      setContactFeedback({ type: 'error', text: error.message || 'No pudimos enviar tu consulta. Probá nuevamente.' });
+    } finally {
+      setContactLoading(false);
+    }
   };
 
   return (
@@ -274,6 +297,7 @@ const Home = () => {
           </div>
 
           <form className="home-contact__form" onSubmit={handleContactSubmit}>
+            <div className="contact-honeypot" aria-hidden="true"><label htmlFor="contact-website">Sitio web</label><input id="contact-website" name="website" tabIndex={-1} autoComplete="off" /></div>
             <label htmlFor="contact-name">Tu nombre / joyería *</label>
             <input
               id="contact-name"
@@ -324,11 +348,16 @@ const Home = () => {
               className="Input"
             />
 
-            <button className="btn btn--primary btn--lg btn--block" type="submit">
-              Preparar consulta <ArrowRight size={18} aria-hidden="true" />
+            <button className="btn btn--primary btn--lg btn--block" type="submit" disabled={contactLoading}>
+              {contactLoading ? 'Enviando consulta…' : 'Enviar consulta'} {!contactLoading && <ArrowRight size={18} aria-hidden="true" />}
             </button>
+            {contactFeedback.text && (
+              <p className={`home-form-feedback home-form-feedback--${contactFeedback.type}`} role="status">
+                {contactFeedback.text}
+              </p>
+            )}
             <p className="home-form-note">
-              Revisás el mensaje antes de enviarlo por WhatsApp.
+              Tus datos se utilizarán únicamente para responder esta consulta.
             </p>
           </form>
         </div> 
