@@ -556,3 +556,19 @@
 .image-upload-field__empty:disabled { opacity: .6; cursor: wait; }
 .image-upload-spin { animation: image-upload-rotate 1s linear infinite; }
 @keyframes image-upload-rotate { to { transform: rotate(360deg); } }
+
+
+/* ---------- Consultas de contacto ---------- */
+.contact-honeypot { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.home-form-feedback { margin: 0; padding: 12px 14px; border-radius: var(--radius-md); font-size: var(--fs-sm); }
+.home-form-feedback--success { color: var(--success); background: rgba(47,122,61,.10); }
+.home-form-feedback--error { color: var(--danger); background: rgba(179,38,30,.10); }
+.home-contact__form button:disabled { opacity: .65; cursor: wait; }
+.admin-contact-list { display: grid; gap: 14px; }
+.admin-contact-card { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); display: grid; gap: 12px; }
+.admin-contact-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.admin-contact-card__meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--text-muted); font-size: var(--fs-xs); }
+.admin-contact-card__message { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.admin-contact-card__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.admin-contact-card select { padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); font: inherit; }
+.admin-contact-card a { color: var(--brand); }
