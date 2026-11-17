@@ -72,9 +72,9 @@ export default function AdminInventory() {
         {data.materials.filter(x=>x.active).map(x=><tr key={x.id}><td><strong>{x.name}</strong>{x.notes&&<small>{x.notes}</small>}</td><td>{categories.find(c=>c[0]===x.category)?.[1]||x.category}</td><td>{x.stock_quantity} {x.unit}</td><td>{x.minimum_quantity} {x.unit}</td><td><span className={x.stock_quantity<=x.minimum_quantity?'inventory-status low':'inventory-status ok'}>{x.stock_quantity<=x.minimum_quantity?'Stock bajo':'Disponible'}</span></td></tr>)}
         {!data.materials.some(x=>x.active)&&<tr><td colSpan="5" className="inventory-no-data">Todavía no cargaste materias primas.</td></tr>}
       </tbody></table></div>}
-      {tab==='products' && <div className="inventory-table-wrap"><table className="inventory-table"><thead><tr><th>Producto</th><th>En existencia</th><th>Reservado</th><th>Disponible</th></tr></thead><tbody>
-        {data.products.map(x=><tr key={x.id}><td><strong>{x.name||x.title||'Producto sin nombre'}</strong></td><td>{x.onHand}</td><td>{x.reserved}</td><td><strong>{x.available}</strong></td></tr>)}
-        {!data.products.length&&<tr><td colSpan="4" className="inventory-no-data">No hay productos activos en el catálogo.</td></tr>}
+      {tab==='products' && <div className="inventory-table-wrap"><table className="inventory-table"><thead><tr><th>Producto</th><th>Precio</th><th>En existencia</th><th>Reservado</th><th>Disponible</th></tr></thead><tbody>
+        {data.products.map(x=><tr key={x.id}><td><strong>{x.name||x.title||'Producto sin nombre'}</strong></td><td>{Number(x.price)>0?new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(x.price):<span className="inventory-status low">Sin precio</span>}</td><td>{x.onHand}</td><td>{x.reserved}</td><td><strong>{x.available}</strong></td></tr>)}
+        {!data.products.length&&<tr><td colSpan="5" className="inventory-no-data">No hay productos activos en el catálogo.</td></tr>}
       </tbody></table></div>}
       {tab==='movements' && <div className="inventory-movement-layout">
         <form className="inventory-form-card" onSubmit={saveMovement}><h2>Registrar movimiento</h2>

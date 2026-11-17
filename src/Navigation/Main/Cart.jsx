@@ -8,6 +8,8 @@ import { formatPrice } from '../../utils/format';
 
 const Cart = () => {
   const { items, removeItem, updateQty, clearCart, totalItems, totalPrice } = useCart();
+  const pricedProductsTotal = items.reduce((sum, item) => sum + (!item.serviceId && Number(item.price) > 0 ? Number(item.price) * item.qty : 0), 0);
+  const hasServices = items.some((item) => Boolean(item.serviceId));
   const { toast } = useToast();
   const navigate = useNavigate();
   const [phone, setPhone] = useState('');
