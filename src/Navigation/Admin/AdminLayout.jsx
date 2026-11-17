@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Package, Wrench, ShoppingBag, Users, MessageSquare,
+  LayoutDashboard, Package, Wrench, ShoppingBag, Users, MessageSquare, Warehouse,
   Settings as SettingsIcon, LogOut, Menu, X, ExternalLink,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/admin/productos', label: 'Productos', icon: Package },
   { to: '/admin/servicios', label: 'Servicios', icon: Wrench },
   { to: '/admin/pedidos', label: 'Pedidos', icon: ShoppingBag },
+  { to: '/admin/inventario', label: 'Inventario', icon: Warehouse },
   { to: '/admin/consultas', label: 'Consultas', icon: MessageSquare },
   { to: '/admin/usuarios', label: 'Usuarios', icon: Users },
   { to: '/admin/configuracion', label: 'Configuración', icon: SettingsIcon },
