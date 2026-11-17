@@ -8,6 +8,7 @@ import AdminServices from './Admin/Services';
 import AdminServiceForm from './Admin/ServiceForm';
 import AdminOrders from './Admin/Orders';
 import AdminContacts from './Admin/Contacts';
+import AdminInventory from './Admin/Inventory';
 import AdminUsers from './Admin/Users';
 import AdminSettings from './Admin/Settings';
 import './Admin/Admin.css';
@@ -29,6 +30,7 @@ const AdminNavigator = () => {
         <Route path="servicios/:slug" element={<AdminServiceForm />} />
         <Route path="pedidos" element={<AdminOrders />} />
         <Route path="consultas" element={<AdminContacts />} />
+        <Route path="inventario" element={<AdminInventory />} />
         <Route path="usuarios" element={<AdminUsers />} />
         <Route path="configuracion" element={<AdminSettings />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
