@@ -9,6 +9,8 @@ const units = ['unidad','g','kg','ml','l','cm','m','mm','par','hoja'];
 
 export default function AdminInventory() {
   const [data, setData] = useState({ materials: [], products: [], movements: [] });
+  const [recipes, setRecipes] = useState([]);
+  const [recipe, setRecipe] = useState({ productId: '', outputQuantity: '1', notes: '', items: [{ materialId: '', quantity: '1' }] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [tab, setTab] = useState('materials');
@@ -19,7 +21,7 @@ export default function AdminInventory() {
 
   const load = useCallback(async () => {
     setLoading(true); setError('');
-    try { setData(await customerApi('admin/inventory')); }
+    try { const [inventory, recipeData] = await Promise.all([customerApi('admin/inventory'), customerApi('admin/inventory/recipes')]); setData(inventory); setRecipes(recipeData.recipes || []); }
     catch (e) { setError(e.message); }
     finally { setLoading(false); }
   }, []);
@@ -46,6 +48,16 @@ export default function AdminInventory() {
     finally { setSaving(false); }
   }
 
+  async function saveRecipe(e) {
+    e.preventDefault(); setSaving(true); setError('');
+    try {
+      await customerApi('admin/inventory/recipes', { method: 'POST', body: JSON.stringify({ ...recipe, outputQuantity: Number(recipe.outputQuantity), items: recipe.items.map(x => ({ materialId: x.materialId, quantity: Number(x.quantity) })) }) });
+      setRecipe({ productId: '', outputQuantity: '1', notes: '', items: [{ materialId: '', quantity: '1' }] });
+      await load();
+    } catch (err) { setError(err.message); }
+    finally { setSaving(false); }
+  }
+
   const movementOptions = movement.entityType === 'material'
     ? [['entry','Entrada'],['consumption','Consumo'],['adjustment','Ajuste de stock']]
     : [['entry','Ingreso'],['production','Producción'],['dispatch','Salida'],['adjustment','Ajuste de stock']];
@@ -65,6 +77,7 @@ export default function AdminInventory() {
     <nav className="inventory-tabs">
       <button className={tab==='materials'?'active':''} onClick={()=>setTab('materials')}>Materias primas</button>
       <button className={tab==='products'?'active':''} onClick={()=>setTab('products')}>Productos terminados</button>
+      <button className={tab==='recipes'?'active':''} onClick={()=>setTab('recipes')}>Recetas</button>
       <button className={tab==='movements'?'active':''} onClick={()=>setTab('movements')}>Movimientos</button>
     </nav>
     {loading ? <div className="inventory-empty"><RefreshCw className="inventory-spin"/> Cargando inventario…</div> : <>
@@ -76,6 +89,22 @@ export default function AdminInventory() {
         {data.products.map(x=><tr key={x.id}><td><strong>{x.name||x.title||'Producto sin nombre'}</strong></td><td>{Number(x.price)>0?new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(x.price):<span className="inventory-status low">Sin precio</span>}</td><td>{x.onHand}</td><td>{x.reserved}</td><td><strong>{x.available}</strong></td></tr>)}
         {!data.products.length&&<tr><td colSpan="5" className="inventory-no-data">No hay productos activos en el catálogo.</td></tr>}
       </tbody></table></div>}
+      {tab==='recipes' && <div className="inventory-movement-layout">
+        <form className="inventory-form-card" onSubmit={saveRecipe}><h2>Composición de producto</h2>
+          <p>Definí cuánta materia prima se necesita para fabricar una cantidad de producto terminado.</p>
+          <label>Producto del catálogo<select required value={recipe.productId} onChange={e=>setRecipe(v=>({...v,productId:e.target.value}))}><option value="">Seleccionar producto…</option>{data.products.map(p=><option key={p.id} value={p.id}>{p.name||p.title}</option>)}</select></label>
+          <label>La receta produce<input required type="number" min="0.001" step="any" value={recipe.outputQuantity} onChange={e=>setRecipe(v=>({...v,outputQuantity:e.target.value}))}/></label>
+          <h3>Materias primas</h3>
+          {recipe.items.map((item,i)=><div className="inventory-form-grid" key={i}>
+            <label>Material<select required value={item.materialId} onChange={e=>setRecipe(v=>({...v,items:v.items.map((x,j)=>j===i?{...x,materialId:e.target.value}:x)}))}><option value="">Seleccionar…</option>{data.materials.filter(x=>x.active).map(m=><option key={m.id} value={m.id}>{m.name} ({m.unit})</option>)}</select></label>
+            <label>Cantidad necesaria<input required type="number" min="0.001" step="any" value={item.quantity} onChange={e=>setRecipe(v=>({...v,items:v.items.map((x,j)=>j===i?{...x,quantity:e.target.value}:x)}))}/></label>
+          </div>)}
+          <button type="button" className="inventory-secondary" onClick={()=>setRecipe(v=>({...v,items:[...v.items,{materialId:'',quantity:'1'}]}))}>+ Agregar material</button>
+          <label>Notas<textarea rows="2" value={recipe.notes} onChange={e=>setRecipe(v=>({...v,notes:e.target.value}))}/></label>
+          <button className="inventory-primary" disabled={saving}><Save size={16}/> Guardar receta</button>
+        </form>
+        <div className="inventory-recent"><h2>Recetas configuradas</h2>{recipes.map(r=><article key={r.id}><span className="inventory-movement-icon"><Factory size={16}/></span><div><strong>{r.product?.name||r.product?.title||'Producto'}</strong><small>Por cada {r.outputQuantity}: {(r.items||[]).map(x=>x.name+' '+x.quantity+' '+x.unit).join(' · ')}</small></div></article>)}{!recipes.length&&<p className="inventory-no-data">Todavía no configuraste recetas.</p>}</div>
+      </div>}
       {tab==='movements' && <div className="inventory-movement-layout">
         <form className="inventory-form-card" onSubmit={saveMovement}><h2>Registrar movimiento</h2>
           <label>Tipo de inventario<select value={movement.entityType} onChange={e=>setMovement(v=>({...v,entityType:e.target.value,entityId:'',movementType:e.target.value==='material'?'entry':'entry'}))}><option value="material">Materia prima</option><option value="finished_product">Producto terminado</option></select></label>
