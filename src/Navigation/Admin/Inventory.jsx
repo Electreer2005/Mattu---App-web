@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Boxes, Factory, Package, Plus, RefreshCw, Save, X } from 'lucide-react';
+import { AlertTriangle, ArrowDownToLine, ArrowUpFromLine, Boxes, Factory, Package, Plus, RefreshCw, Save, X, Pencil } from 'lucide-react';
 import { customerApi } from '../../services/customerApi';
 import './Inventory.css';
 
@@ -15,6 +15,7 @@ export default function AdminInventory() {
   const [error, setError] = useState('');
   const [tab, setTab] = useState('materials');
   const [showMaterial, setShowMaterial] = useState(false);
+  const [editingMaterialId, setEditingMaterialId] = useState(null);
   const [material, setMaterial] = useState(emptyMaterial);
   const [movement, setMovement] = useState({ entityType: 'material', entityId: '', movementType: 'entry', quantity: '', note: '' });
   const [saving, setSaving] = useState(false);
@@ -33,8 +34,12 @@ export default function AdminInventory() {
   async function createMaterial(e) {
     e.preventDefault(); setSaving(true); setError('');
     try {
-      await customerApi('admin/inventory/materials', { method: 'POST', body: JSON.stringify({ ...material, stockQuantity: Number(material.stockQuantity), minimumQuantity: Number(material.minimumQuantity) }) });
-      setMaterial(emptyMaterial); setShowMaterial(false); await load();
+      if (editingMaterialId) {
+        await customerApi('admin/inventory/materials/' + editingMaterialId, { method: 'PATCH', body: JSON.stringify({ name: material.name, category: material.category, unit: material.unit, minimumQuantity: Number(material.minimumQuantity), notes: material.notes }) });
+      } else {
+        await customerApi('admin/inventory/materials', { method: 'POST', body: JSON.stringify({ ...material, stockQuantity: Number(material.stockQuantity), minimumQuantity: Number(material.minimumQuantity) }) });
+      }
+      setMaterial(emptyMaterial); setEditingMaterialId(null); setShowMaterial(false); await load();
     } catch (err) { setError(err.message); }
     finally { setSaving(false); }
   }
@@ -65,7 +70,7 @@ export default function AdminInventory() {
   return <section className="inventory-page">
     <header className="inventory-heading">
       <div><span className="inventory-eyebrow">GESTIÓN INTERNA</span><h1>Inventario</h1><p>Controlá materiales, productos terminados y movimientos de stock.</p></div>
-      <button className="inventory-primary" onClick={() => setShowMaterial(true)}><Plus size={17}/> Nuevo material</button>
+      <button className="inventory-primary" onClick={() => { setEditingMaterialId(null); setMaterial(emptyMaterial); setShowMaterial(true); }}><Plus size={17}/> Nuevo material</button>
     </header>
     {error && <div className="inventory-alert"><AlertTriangle size={17}/>{error}</div>}
     <div className="inventory-stats">
@@ -81,9 +86,9 @@ export default function AdminInventory() {
       <button className={tab==='movements'?'active':''} onClick={()=>setTab('movements')}>Movimientos</button>
     </nav>
     {loading ? <div className="inventory-empty"><RefreshCw className="inventory-spin"/> Cargando inventario…</div> : <>
-      {tab==='materials' && <div className="inventory-table-wrap"><table className="inventory-table"><thead><tr><th>Material</th><th>Categoría</th><th>Existencia</th><th>Stock mínimo</th><th>Estado</th></tr></thead><tbody>
-        {data.materials.filter(x=>x.active).map(x=><tr key={x.id}><td><strong>{x.name}</strong>{x.notes&&<small>{x.notes}</small>}</td><td>{categories.find(c=>c[0]===x.category)?.[1]||x.category}</td><td>{x.stock_quantity} {x.unit}</td><td>{x.minimum_quantity} {x.unit}</td><td><span className={x.stock_quantity<=x.minimum_quantity?'inventory-status low':'inventory-status ok'}>{x.stock_quantity<=x.minimum_quantity?'Stock bajo':'Disponible'}</span></td></tr>)}
-        {!data.materials.some(x=>x.active)&&<tr><td colSpan="5" className="inventory-no-data">Todavía no cargaste materias primas.</td></tr>}
+      {tab==='materials' && <div className="inventory-table-wrap"><table className="inventory-table"><thead><tr><th>Material</th><th>Categoría</th><th>Existencia</th><th>Stock mínimo</th><th>Estado</th><th></th></tr></thead><tbody>
+        {data.materials.filter(x=>x.active).map(x=><tr key={x.id}><td><strong>{x.name}</strong>{x.notes&&<small>{x.notes}</small>}</td><td>{categories.find(c=>c[0]===x.category)?.[1]||x.category}</td><td>{x.stock_quantity} {x.unit}</td><td>{x.minimum_quantity} {x.unit}</td><td><span className={x.stock_quantity<=x.minimum_quantity?'inventory-status low':'inventory-status ok'}>{x.stock_quantity<=x.minimum_quantity?'Stock bajo':'Disponible'}</span></td><td><button type="button" className="inventory-secondary" onClick={()=>{setEditingMaterialId(x.id);setMaterial({name:x.name,category:x.category,unit:x.unit,stockQuantity:String(x.stock_quantity),minimumQuantity:String(x.minimum_quantity),notes:x.notes||''});setShowMaterial(true);}}><Pencil size={14}/> Editar</button></td></tr>)}
+        {!data.materials.some(x=>x.active)&&<tr><td colSpan="6" className="inventory-no-data">Todavía no cargaste materias primas.</td></tr>}
       </tbody></table></div>}
       {tab==='products' && <div className="inventory-table-wrap"><table className="inventory-table"><thead><tr><th>Producto</th><th>Precio</th><th>En existencia</th><th>Reservado</th><th>Disponible</th><th>Estado</th></tr></thead><tbody>
         {data.products.map(x=><tr key={x.id}><td><strong>{x.name||x.title||'Producto sin nombre'}</strong></td><td>{Number(x.price)>0?new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(x.price):<span className="inventory-status low">Sin precio</span>}</td><td>{x.onHand}</td><td>{x.reserved}</td><td><strong>{x.available}</strong></td><td><span className={x.available>0?'inventory-status ok':'inventory-status low'}>{x.available>0?'Disponible':'Sin stock'}</span></td></tr>)}
@@ -119,12 +124,12 @@ export default function AdminInventory() {
       </div>}
     </>}
     {showMaterial && <div className="inventory-modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setShowMaterial(false)}}><form className="inventory-modal" onSubmit={createMaterial}>
-      <header><div><span className="inventory-eyebrow">NUEVO REGISTRO</span><h2>Agregar materia prima</h2></div><button type="button" className="inventory-close" onClick={()=>setShowMaterial(false)} aria-label="Cerrar"><X/></button></header>
+      <header><div><span className="inventory-eyebrow">NUEVO REGISTRO</span><h2>{editingMaterialId?'Editar materia prima':'Agregar materia prima'}</h2></div><button type="button" className="inventory-close" onClick={()=>setShowMaterial(false)} aria-label="Cerrar"><X/></button></header>
       <label>Nombre<input required maxLength="120" value={material.name} onChange={e=>setMaterial(v=>({...v,name:e.target.value}))} placeholder="Ej. Cuero vacuno"/></label>
       <div className="inventory-form-grid"><label>Categoría<select value={material.category} onChange={e=>setMaterial(v=>({...v,category:e.target.value}))}>{categories.map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label><label>Unidad<select value={material.unit} onChange={e=>setMaterial(v=>({...v,unit:e.target.value}))}>{units.map(x=><option key={x}>{x}</option>)}</select></label></div>
-      <div className="inventory-form-grid"><label>Stock inicial<input type="number" min="0" step="any" value={material.stockQuantity} onChange={e=>setMaterial(v=>({...v,stockQuantity:e.target.value}))}/></label><label>Stock mínimo<input type="number" min="0" step="any" value={material.minimumQuantity} onChange={e=>setMaterial(v=>({...v,minimumQuantity:e.target.value}))}/></label></div>
+      <div className="inventory-form-grid"><label>{editingMaterialId?'Stock actual (solo lectura)':'Stock inicial'}<input type="number" min="0" step="any" disabled={Boolean(editingMaterialId)} value={material.stockQuantity} onChange={e=>setMaterial(v=>({...v,stockQuantity:e.target.value}))}/></label><label>Stock mínimo<input type="number" min="0" step="any" value={material.minimumQuantity} onChange={e=>setMaterial(v=>({...v,minimumQuantity:e.target.value}))}/></label></div>
       <label>Notas<textarea rows="2" value={material.notes} onChange={e=>setMaterial(v=>({...v,notes:e.target.value}))}/></label>
-      <footer><button type="button" className="inventory-secondary" onClick={()=>setShowMaterial(false)}>Cancelar</button><button className="inventory-primary" disabled={saving}><Save size={16}/> Guardar material</button></footer>
+      <footer><button type="button" className="inventory-secondary" onClick={()=>{setShowMaterial(false);setEditingMaterialId(null);}}>Cancelar</button><button className="inventory-primary" disabled={saving}><Save size={16}/> Guardar material</button></footer>
     </form></div>}
   </section>;
 }
