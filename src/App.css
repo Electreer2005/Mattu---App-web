@@ -268,9 +268,14 @@ hr {
 /* Primario: naranja de marca con texto oscuro.
    Si preferís texto blanco, cambiá --black por var(--white). */
 .btn--primary {
-  background: var(--brand);
-  color: var(--black);
+  background: var(--accent);
+  color: var(--mattu-ink);
   box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--orange-600);
+  color: var(--mattu-ink);
+  box-shadow: 0 8px 24px rgba(255, 143, 0, 0.24);
 }
 .btn--primary:hover:not(:disabled) {
   background: var(--brand-hover);
