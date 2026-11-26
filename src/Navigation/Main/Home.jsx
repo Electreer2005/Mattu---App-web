@@ -55,10 +55,6 @@ const GALLERY = [
   { src: '/Img/Banner-2.jpeg', alt: 'Pulsera con mirada grabada' },
   { src: '/Img/Banner-3.jpeg', alt: 'Dije con retrato grabado' },
   { src: '/Img/Banner-4.jpeg', alt: 'Dijes con iniciales' },
-  { src: '/Img/vaso-grabado.svg', alt: 'Vaso térmico grabado' },
-  { src: '/Img/termo-disenos.svg', alt: 'Termo con diseños' },
-  { src: '/Img/virola-disenos.svg', alt: 'Virola con dibujos' },
-  { src: '/Img/tabla-madera.svg', alt: 'Tabla de madera grabada' },
 ];
 
 const Home = () => {
